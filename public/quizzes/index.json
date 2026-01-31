@@ -1,0 +1,337 @@
+[
+  {
+    "id": "ch01",
+    "chapter": "Chapter 1",
+    "title": "Introduction to Information Systems",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is the primary purpose of an Information System in an organization?",
+        "options": [
+          "A) To provide entertainment for employees",
+          "B) To collect, process, store, and distribute information",
+          "C) To replace all manual labor processes",
+          "D) To increase company revenue directly"
+        ],
+        "correct_answer": 1,
+        "explanation": "Information Systems are designed to collect, process, store, and distribute information to support decision-making, coordination, and control in organizations."
+      },
+      {
+        "id": 2,
+        "question": "Which of the following is NOT typically considered a component of an Information System?",
+        "options": [
+          "A) People",
+          "B) Processes",
+          "C) Technology",
+          "D) Office furniture"
+        ],
+        "correct_answer": 3,
+        "explanation": "The five components of an IS are: people, processes, technology, data, and information. Office furniture is not a core component."
+      },
+      {
+        "id": 3,
+        "question": "What does IT stand for in the context of business organizations?",
+        "options": [
+          "A) International Trade",
+          "B) Information Technology",
+          "C) Industrial Tools",
+          "D) Integrated Transactions"
+        ],
+        "correct_answer": 1,
+        "explanation": "IT stands for Information Technology, referring to the use of computers, networks, and software to manage and process information."
+      },
+      {
+        "id": 4,
+        "question": "Which type of Information System helps managers make strategic decisions?",
+        "options": [
+          "A) Transaction Processing System (TPS)",
+          "B) Management Information System (MIS)",
+          "C) Decision Support System (DSS)",
+          "D) Office Automation System (OAS)"
+        ],
+        "correct_answer": 2,
+        "explanation": "Decision Support Systems (DSS) are designed to help managers analyze complex situations, evaluate alternatives, and make strategic decisions."
+      },
+      {
+        "id": 5,
+        "question": "What is the key difference between data and information?",
+        "options": [
+          "A) Data is processed, information is raw",
+          "B) Information is processed data that has meaning and context",
+          "C) They mean the same thing",
+          "D) Data is only numbers, information is only text"
+        ],
+        "correct_answer": 1,
+        "explanation": "Data refers to raw facts and figures without context, while information is processed, organized data that has meaning and is useful for decision-making."
+      }
+    ]
+  },
+  {
+    "id": "ch02",
+    "chapter": "Chapter 2",
+    "title": "Database Management Systems",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is a database?",
+        "options": [
+          "A) A collection of unrelated files",
+          "B) An organized collection of related, logically coherent data",
+          "C) A type of spreadsheet software",
+          "D) A computer program for typing"
+        ],
+        "correct_answer": 1,
+        "explanation": "A database is an organized collection of related, logically coherent data that is used by applications and accessed by users."
+      },
+      {
+        "id": 2,
+        "question": "What does DBMS stand for?",
+        "options": [
+          "A) Data Management and Security System",
+          "B) Database Management System",
+          "C) Digital Business Management Software",
+          "D) Data Base Manipulation System"
+        ],
+        "correct_answer": 1,
+        "explanation": "DBMS stands for Database Management System, which is software that allows users to define, create, maintain, and control access to databases."
+      },
+      {
+        "id": 3,
+        "question": "What is a primary key in a database?",
+        "options": [
+          "A) The most important column in a table",
+          "B) A unique identifier for each record in a table",
+          "C) The first column added to a table",
+          "D) A key that opens the database"
+        ],
+        "correct_answer": 1,
+        "explanation": "A primary key is a unique identifier (like a student ID or employee number) that uniquely identifies each record in a database table."
+      },
+      {
+        "id": 4,
+        "question": "What is SQL used for in database management?",
+        "options": [
+          "A) Statistical Quality Leadership",
+          "B) Structured Query Language for managing databases",
+          "C) Simple Question Language",
+          "D) Server Queue Logging"
+        ],
+        "correct_answer": 1,
+        "explanation": "SQL (Structured Query Language) is a standard language used to communicate with and manage relational databases."
+      },
+      {
+        "id": 5,
+        "question": "What is data redundancy?",
+        "options": [
+          "A) Having backup copies of data",
+          "B) Duplicate data stored in multiple places",
+          "C) Reducing the amount of stored data",
+          "D) A type of data compression"
+        ],
+        "correct_answer": 1,
+        "explanation": "Data redundancy occurs when the same data is stored in multiple locations, which can lead to inconsistency and wasted storage space."
+      }
+    ]
+  },
+  {
+    "id": "ch03",
+    "chapter": "Chapter 3",
+    "title": "Networks and Telecommunications",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is a computer network?",
+        "options": [
+          "A) A group of computers connected to share resources and information",
+          "B) A type of computer virus",
+          "C) A single computer with multiple users",
+          "D) A cable that connects to the internet"
+        ],
+        "correct_answer": 0,
+        "explanation": "A computer network is a group of interconnected computers that communicate and share resources, information, and applications."
+      },
+      {
+        "id": 2,
+        "question": "What does LAN stand for?",
+        "options": [
+          "A) Large Area Network",
+          "B) Local Area Network",
+          "C) Long Access Network",
+          "D) Linked Array Node"
+        ],
+        "correct_answer": 1,
+        "explanation": "LAN (Local Area Network) is a network that connects computers within a limited area like a home, office, or building."
+      },
+      {
+        "id": 3,
+        "question": "What is the purpose of a router in a network?",
+        "options": [
+          "A) To connect computers to electrical power",
+          "B) To direct data packets between different networks",
+          "C) To store files permanently",
+          "D) To print documents"
+        ],
+        "correct_answer": 1,
+        "explanation": "A router is a networking device that directs data packets between different networks, determining the best path for data transmission."
+      },
+      {
+        "id": 4,
+        "question": "What does TCP/IP stand for?",
+        "options": [
+          "A) Transmission Control Protocol/Internet Protocol",
+          "B) Technical Computer Process/Internet Provider",
+          "C) Total Connection Protocol/Internal Path",
+          "D) Telephone Connection Protocol/Internet Path"
+        ],
+        "correct_answer": 0,
+        "explanation": "TCP/IP (Transmission Control Protocol/Internet Protocol) is the fundamental communication protocol suite that enables data exchange across the internet."
+      },
+      {
+        "id": 5,
+        "question": "What is the difference between the internet and the web?",
+        "options": [
+          "A) They are the same thing",
+          "B) The web is a service that runs on the internet",
+          "C) The internet is a service that runs on the web",
+          "D) The web is faster than the internet"
+        ],
+        "correct_answer": 1,
+        "explanation": "The internet is the global network infrastructure, while the World Wide Web is one of many services (along with email, FTP, etc.) that runs on the internet."
+      }
+    ]
+  },
+  {
+    "id": "ch04",
+    "chapter": "Chapter 4",
+    "title": "Enterprise Systems and Business Processes",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is an Enterprise Resource Planning (ERP) system?",
+        "options": [
+          "A) A system for planning employee vacations",
+          "B) Integrated software that manages core business processes",
+          "C) A type of spreadsheet for budgets",
+          "D) A customer relationship database"
+        ],
+        "correct_answer": 1,
+        "explanation": "ERP (Enterprise Resource Planning) systems are integrated software suites that manage and automate core business processes like finance, HR, manufacturing, and supply chain."
+      },
+      {
+        "id": 2,
+        "question": "What is a business process?",
+        "options": [
+          "A) A procedure for hiring new employees",
+          "B) A set of related activities that accomplish a specific goal",
+          "C) A document describing company policies",
+          "D) A type of software license"
+        ],
+        "correct_answer": 1,
+        "explanation": "A business process is a set of logically related activities or tasks that, together, accomplish a specific organizational goal or business objective."
+      },
+      {
+        "id": 3,
+        "question": "What is the main benefit of Business Process Reengineering (BPR)?",
+        "options": [
+          "A) Making small improvements to existing processes",
+          "B) Fundamental rethinking and radical redesign of processes",
+          "C) Automating only manual tasks",
+          "D) Reducing employee headcount"
+        ],
+        "correct_answer": 1,
+        "explanation": "BPR (Business Process Reengineering) involves the fundamental rethinking and radical redesign of business processes to achieve dramatic improvements in critical areas."
+      },
+      {
+        "id": 4,
+        "question": "What is supply chain management?",
+        "options": [
+          "A) Managing suppliers' computer networks",
+          "B) The flow of goods, information, and finances across the entire supply chain",
+          "C) A software for tracking delivery trucks",
+          "D) A type of inventory counting method"
+        ],
+        "correct_answer": 1,
+        "explanation": "Supply chain management involves the coordination and management of the flow of goods, information, and finances from suppliers to manufacturers to retailers to consumers."
+      },
+      {
+        "id": 5,
+        "question": "What is Customer Relationship Management (CRM)?",
+        "options": [
+          "A) A system for managing customer relationships and interactions",
+          "B) A legal document for customer agreements",
+          "C) A type of survey questionnaire",
+          "D) A method for calculating customer discounts"
+        ],
+        "correct_answer": 0,
+        "explanation": "CRM (Customer Relationship Management) systems help organizations manage and analyze customer interactions, track customer data, and improve business relationships."
+      }
+    ]
+  },
+  {
+    "id": "ch05",
+    "chapter": "Chapter 5",
+    "title": "E-Commerce and Digital Business",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is E-Commerce?",
+        "options": [
+          "A) Buying and selling goods and services over the internet",
+          "B) Electronic communication between businesses",
+          "C) A type of email marketing",
+          "D) Online banking only"
+        ],
+        "correct_answer": 0,
+        "explanation": "E-Commerce refers to the buying and selling of goods, services, and information over the internet and other electronic networks."
+      },
+      {
+        "id": 2,
+        "question": "What does B2B stand for in e-commerce?",
+        "options": [
+          "A) Business to Business",
+          "B) Business to Consumer",
+          "C) Business to Government",
+          "D) Back to Basics"
+        ],
+        "correct_answer": 0,
+        "explanation": "B2B (Business to Business) e-commerce involves transactions between businesses, such as a manufacturer buying supplies from a wholesaler."
+      },
+      {
+        "id": 3,
+        "question": "What is a digital marketplace?",
+        "options": [
+          "A) A physical store that sells digital products",
+          "B) An online platform that connects buyers and sellers",
+          "C) A government website for business licenses",
+          "D) A type of payment processor"
+        ],
+        "correct_answer": 1,
+        "explanation": "A digital marketplace is an online platform (like Amazon, eBay, or Etsy) that connects multiple buyers and sellers, facilitating transactions between them."
+      },
+      {
+        "id": 4,
+        "question": "What is one advantage of e-commerce for consumers?",
+        "options": [
+          "A) Higher prices than physical stores",
+          "B) Limited product selection",
+          "C) 24/7 availability and convenience",
+          "D) Only cash payments accepted"
+        ],
+        "correct_answer": 2,
+        "explanation": "E-commerce offers consumers the convenience of shopping anytime, anywhere, with access to a wide variety of products and competitive pricing."
+      },
+      {
+        "id": 5,
+        "question": "What is m-commerce?",
+        "options": [
+          "A) Mail commerce",
+          "B) Mobile commerce conducted via smartphones and tablets",
+          "C) Manual commerce",
+          "D) Multi-level commerce"
+        ],
+        "correct_answer": 1,
+        "explanation": "M-Commerce (Mobile Commerce) refers to e-commerce transactions conducted through mobile devices like smartphones and tablets."
+      }
+    ]
+  }
+]
