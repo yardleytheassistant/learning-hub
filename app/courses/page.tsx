@@ -105,45 +105,45 @@ export default function CoursesPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Course Library</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Course Library</h1>
+            <p className="text-sm md:text-base text-muted-foreground">
               Browse and enroll in courses to advance your learning journey.
             </p>
           </div>
-          <Button asChild>
+          <Button size="sm" asChild>
             <Link href="/courses/new">Add Course</Link>
           </Button>
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-10"
             />
           </div>
           <div className="flex gap-2">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border rounded-lg bg-background text-sm"
+              className="px-3 py-2 border rounded-lg bg-background text-sm h-10"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
+                <option key={cat} value={cat}>{cat === 'All' ? 'All' : cat}</option>
               ))}
             </select>
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="px-3 py-2 border rounded-lg bg-background text-sm"
+              className="px-3 py-2 border rounded-lg bg-background text-sm h-10"
             >
               {difficulties.map((diff) => (
                 <option key={diff} value={diff}>{diff === 'All' ? 'All Levels' : diff}</option>
@@ -153,43 +153,35 @@ export default function CoursesPage() {
         </div>
 
         {/* Course Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredCourses.map((course) => {
             const progressPercent = Math.round((course.completedLessons / course.lessonsCount) * 100)
             const isEnrolled = course.completedLessons > 0
 
             return (
-              <Card key={course.id} className="flex flex-col hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="w-fit">
-                      {course.category}
-                    </Badge>
-                    <Badge className={`w-fit ${getDifficultyColor(course.difficulty)}`}>
+              <Card key={course.id} className="flex flex-col hover:shadow-lg transition-shadow p-3 md:p-6">
+                <CardHeader className="p-0 pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="outline" className="text-xs">{course.category}</Badge>
+                    <Badge className={`text-xs ${getDifficultyColor(course.difficulty)}`}>
                       {course.difficulty}
                     </Badge>
                   </div>
-                  <CardTitle className="line-clamp-2 mt-2">{course.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">{course.description}</CardDescription>
+                  <CardTitle className="text-base md:text-lg line-clamp-2">{course.title}</CardTitle>
+                  <CardDescription className="line-clamp-2 text-sm">{course.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-1 flex flex-col justify-end">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>{course.lessonsCount} lessons</span>
-                      {isEnrolled && (
-                        <span>{progressPercent}% complete</span>
-                      )}
-                    </div>
-                    {isEnrolled && (
-                      <Progress value={progressPercent} className="h-2" />
-                    )}
-                    <Button className="w-full" variant={isEnrolled ? 'default' : 'outline'} asChild>
-                      <Link href={`/courses/${course.id}`}>
-                        {isEnrolled ? 'Continue' : 'Enroll'}
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
+                <CardContent className="p-0 mt-auto pt-3">
+                  <div className="flex items-center justify-between text-xs md:text-sm text-muted-foreground mb-2">
+                    <span>{course.lessonsCount} lessons</span>
+                    {isEnrolled && <span>{progressPercent}%</span>}
                   </div>
+                  {isEnrolled && <Progress value={progressPercent} className="h-1.5 mb-3" />}
+                  <Button className="w-full text-sm" variant={isEnrolled ? 'default' : 'outline'} size="sm" asChild>
+                    <Link href={`/courses/${course.id}`}>
+                      {isEnrolled ? 'Continue' : 'Enroll'}
+                      <ChevronRight className="ml-1 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             )

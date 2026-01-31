@@ -23,64 +23,64 @@ export default function DashboardPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Track your learning progress and continue where you left off.</p>
+        <div className="text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground mt-1">Track your learning progress and continue where you left off.</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
+        <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
+          <Card className="p-3 md:p-6">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Progress</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">Today's Progress</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{todayMinutes} min</div>
+            <CardContent className="p-3 md:p-6 pt-0 md:pt-0">
+              <div className="text-xl md:text-2xl font-bold">{todayMinutes} min</div>
               <p className="text-xs text-muted-foreground">
-                {remainingMinutes} min remaining to reach your goal
+                {remainingMinutes} min remaining
               </p>
               <Progress value={progressPercent} className="mt-2 h-2" />
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="p-3 md:p-6">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Learning Streak</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">Learning Streak</CardTitle>
               <Flame className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{streakDays} days</div>
+            <CardContent className="p-3 md:p-6 pt-0 md:pt-0">
+              <div className="text-xl md:text-2xl font-bold">{streakDays} days</div>
               <p className="text-xs text-muted-foreground">
                 {streakDays > 0 ? 'Keep it up! 🔥' : 'Start your streak today'}
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="p-3 md:p-6">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Lessons Completed</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">Lessons Completed</CardTitle>
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{completedLessons.length}</div>
+            <CardContent className="p-3 md:p-6 pt-0 md:pt-0">
+              <div className="text-xl md:text-2xl font-bold">{completedLessons.length}</div>
               <p className="text-xs text-muted-foreground">
                 Total lessons completed
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="p-3 md:p-6">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Weekly Goal</CardTitle>
+              <CardTitle className="text-xs md:text-sm font-medium">Weekly Goal</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">75%</div>
+            <CardContent className="p-3 md:p-6 pt-0 md:pt-0">
+              <div className="text-xl md:text-2xl font-bold">75%</div>
               <p className="text-xs text-muted-foreground">
-                On track for this week
+                On track this week
               </p>
               <Progress value={75} className="mt-2 h-2" />
             </CardContent>
@@ -88,9 +88,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Continue Learning */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold tracking-tight">Continue Learning</h2>
-          <Button variant="ghost" asChild>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <h2 className="text-lg md:text-xl font-semibold tracking-tight">Continue Learning</h2>
+          <Button variant="ghost" size="sm" asChild>
             <Link href="/courses">
               View All
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -98,19 +98,19 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {recentCourses.map((course) => (
-            <Card key={course.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
-              <CardHeader>
-                <div className="flex items-center justify-between">
+            <Card key={course.id} className="cursor-pointer hover:bg-accent/50 transition-colors p-3 md:p-6">
+              <CardHeader className="p-0 pb-3">
+                <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-muted-foreground">{course.category}</span>
                   <span className="text-xs font-medium">{course.progress}%</span>
                 </div>
-                <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                <CardTitle className="text-base md:text-lg line-clamp-2">{course.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <Progress value={course.progress} className="mb-3" />
-                <Button variant="outline" className="w-full" asChild>
+              <CardContent className="p-0">
+                <Progress value={course.progress} className="mb-3 h-1.5 md:h-2" />
+                <Button variant="outline" size="sm" className="w-full" asChild>
                   <Link href={`/courses/${course.id}`}>
                     Continue
                   </Link>
@@ -123,19 +123,19 @@ export default function DashboardPage() {
         {/* Daily Goal Call-to-Action */}
         {remainingMinutes > 0 && (
           <Card className="bg-primary/5 border-primary/20">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-full">
-                  <Target className="h-6 w-6 text-primary" />
+            <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 md:p-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 md:p-3 bg-primary/10 rounded-full shrink-0">
+                  <Target className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">Daily Goal: {dailyGoalMinutes} minutes</h3>
-                  <p className="text-sm text-muted-foreground">
-                    You're {remainingMinutes} minutes away from reaching your goal today!
+                  <h3 className="font-semibold text-sm md:text-base">Daily Goal: {dailyGoalMinutes} min</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    {remainingMinutes} min away from your goal!
                   </p>
                 </div>
               </div>
-              <Button asChild>
+              <Button size="sm" asChild>
                 <Link href="/courses">Start Learning</Link>
               </Button>
             </CardContent>
