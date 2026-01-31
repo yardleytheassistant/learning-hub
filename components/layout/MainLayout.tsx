@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   GraduationCap,
+  Brain,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useLearningStore } from '@/lib/store'
@@ -20,6 +21,7 @@ import { useLearningStore } from '@/lib/store'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Courses', href: '/courses', icon: BookOpen },
+  { name: 'Quizzes', href: '/quiz', icon: Brain },
   { name: 'My Goals', href: '/goals', icon: Target },
   { name: 'Achievements', href: '/achievements', icon: Trophy },
 ]
