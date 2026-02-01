@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -6,10 +5,6 @@ import { BookOpen, Target, Trophy, ArrowRight, GraduationCap } from 'lucide-reac
 import Link from 'next/link'
 
 export default function Home() {
-  // For MVP, redirect to dashboard
-  // Later we can add a landing page with auth
-  redirect('/dashboard')
-
   return (
     <MainLayout>
       <div className="space-y-8">

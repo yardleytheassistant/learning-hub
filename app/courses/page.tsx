@@ -8,193 +8,194 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { BookOpen, Search, Filter, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-// Mock data for MVP
-const courses = [
-  {
-    id: '1',
-    title: 'IS 601 - Information Systems',
-    description: 'Covers foundational concepts in information systems, databases, and business technology.',
-    category: 'MBA',
-    difficulty: 'beginner' as const,
-    lessonsCount: 20,
-    completedLessons: 13,
-    thumbnail: null,
-  },
-  {
-    id: '2',
-    title: 'MKTG 500 - Marketing Fundamentals',
-    description: 'Introduction to marketing strategies, consumer behavior, and market research.',
-    category: 'MBA',
-    difficulty: 'intermediate' as const,
-    lessonsCount: 15,
-    completedLessons: 4,
-    thumbnail: null,
-  },
-  {
-    id: '3',
-    title: 'HRM 652 - Human Resource Management',
-    description: 'Strategic HR management, talent acquisition, and organizational development.',
-    category: 'MBA',
-    difficulty: 'advanced' as const,
-    lessonsCount: 18,
-    completedLessons: 2,
-    thumbnail: null,
-  },
-  {
-    id: '4',
-    title: 'AI & Machine Learning Basics',
-    description: 'Understanding artificial intelligence and machine learning fundamentals.',
-    category: 'Technology',
-    difficulty: 'beginner' as const,
-    lessonsCount: 12,
-    completedLessons: 0,
-    thumbnail: null,
-  },
-  {
-    id: '5',
-    title: 'Data Analytics with Python',
-    description: 'Learn data analysis, visualization, and statistical methods using Python.',
-    category: 'Technology',
-    difficulty: 'intermediate' as const,
-    lessonsCount: 25,
-    completedLessons: 0,
-    thumbnail: null,
-  },
-  {
-    id: '6',
-    title: 'Leadership & Management',
-    description: 'Essential leadership skills for managing teams and organizations effectively.',
-    category: 'Business',
-    difficulty: 'intermediate' as const,
-    lessonsCount: 16,
-    completedLessons: 0,
-    thumbnail: null,
-  },
-]
+interface Course {
+  id: string
+  title: string
+  description: string
+  category: string
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
+}
 
-const categories = ['All', 'MBA', 'Technology', 'Business']
-const difficulties = ['All', 'beginner', 'intermediate', 'advanced']
+interface CourseWithChapters extends Course {
+  chapters_count: number
+  quizzes_count: number
+}
 
 export default function CoursesPage() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All')
+  const [courses, setCourses] = useState<CourseWithChapters[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory
-    const matchesDifficulty = selectedDifficulty === 'All' || course.difficulty === selectedDifficulty
-    return matchesSearch && matchesCategory && matchesDifficulty
-  })
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-      case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-      case 'advanced':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-      default:
-        return 'bg-gray-100 text-gray-800'
+  useEffect(() => {
+    async function fetchCourses() {
+      const res = await fetch(
+        'https://gjpyxskuqluokzrxqkby.supabase.co/rest/v1/courses?select=*',
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+          }
+        }
+      )
+      const data = await res.json()
+      
+      // Get chapter and quiz counts for each course
+      const coursesWithCounts = await Promise.all(
+        data.map(async (course: Course) => {
+          const chaptersRes = await fetch(
+            `https://gjpyxskuqluokzrxqkby.supabase.co/rest/v1/chapters?course_id=eq.${course.id}&select=id`,
+            {
+              headers: {
+                'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+                'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+              }
+            }
+          )
+          const chapters = await chaptersRes.json()
+          
+          const quizzesRes = await fetch(
+            `https://gjpyxskuqluokzrxqkby.supabase.co/rest/v1/quizzes?chapter_id=in.${chapters.map((c: any) => c.id).join(',')}&select=id`,
+            {
+              headers: {
+                'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+                'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+              }
+            }
+          )
+          const quizzes = await quizzesRes.json()
+          
+          return {
+            ...course,
+            chapters_count: chapters.length,
+            quizzes_count: quizzes.length
+          }
+        })
+      )
+      
+      setCourses(coursesWithCounts)
+      setLoading(false)
     }
+    fetchCourses()
+  }, [])
+
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.category.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const difficultyColor = {
+    beginner: 'bg-green-100 text-green-800',
+    intermediate: 'bg-yellow-100 text-yellow-800',
+    advanced: 'bg-red-100 text-red-800'
+  }
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </MainLayout>
+    )
   }
 
   return (
     <MainLayout>
-      <div className="space-y-6 md:space-y-8">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Course Library</h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Browse and enroll in courses to advance your learning journey.
-            </p>
+            <h1 className="text-3xl font-bold">Learning Hub</h1>
+            <p className="text-muted-foreground">Master statistics for business with interactive lessons and quizzes</p>
           </div>
-          <Button size="sm" asChild>
-            <Link href="/courses/new">Add Course</Link>
-          </Button>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="flex flex-col gap-3 md:flex-row md:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search courses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-10"
-            />
-          </div>
-          <div className="flex gap-2">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border rounded-lg bg-background text-sm h-10"
-            >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat === 'All' ? 'All' : cat}</option>
-              ))}
-            </select>
-            <select
-              value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="px-3 py-2 border rounded-lg bg-background text-sm h-10"
-            >
-              {difficulties.map((diff) => (
-                <option key={diff} value={diff}>{diff === 'All' ? 'All Levels' : diff}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search courses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 w-64"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Course Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCourses.map((course) => {
-            const progressPercent = Math.round((course.completedLessons / course.lessonsCount) * 100)
-            const isEnrolled = course.completedLessons > 0
-
-            return (
-              <Card key={course.id} className="flex flex-col hover:shadow-lg transition-shadow p-3 md:p-6">
-                <CardHeader className="p-0 pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="text-xs">{course.category}</Badge>
-                    <Badge className={`text-xs ${getDifficultyColor(course.difficulty)}`}>
-                      {course.difficulty}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-base md:text-lg line-clamp-2">{course.title}</CardTitle>
-                  <CardDescription className="line-clamp-2 text-sm">{course.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0 mt-auto pt-3">
-                  <div className="flex items-center justify-between text-xs md:text-sm text-muted-foreground mb-2">
-                    <span>{course.lessonsCount} lessons</span>
-                    {isEnrolled && <span>{progressPercent}%</span>}
-                  </div>
-                  {isEnrolled && <Progress value={progressPercent} className="h-1.5 mb-3" />}
-                  <Button className="w-full text-sm" variant={isEnrolled ? 'default' : 'outline'} size="sm" asChild>
-                    <Link href={`/courses/${course.id}`}>
-                      {isEnrolled ? 'Continue' : 'Enroll'}
-                      <ChevronRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )
-          })}
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{courses.length}</p>
+                <p className="text-sm text-muted-foreground">Courses Available</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <Filter className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{courses.reduce((acc, c) => acc + c.chapters_count, 0)}</p>
+                <p className="text-sm text-muted-foreground">Total Chapters</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <ChevronRight className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{courses.reduce((acc, c) => acc + c.quizzes_count, 0)}</p>
+                <p className="text-sm text-muted-foreground">Quizzes</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {filteredCourses.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold">No courses found</h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search or filters to find what you're looking for.
-            </p>
+        {/* Courses Grid */}
+        {filteredCourses.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold">No courses found</h3>
+              <p className="text-muted-foreground">Try adjusting your search</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCourses.map((course) => (
+              <Link key={course.id} href={`/courses/${course.id}`}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardHeader>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="outline">{course.category}</Badge>
+                      <Badge className={difficultyColor[course.difficulty]}>{course.difficulty}</Badge>
+                    </div>
+                    <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+                    <CardDescription className="line-clamp-2">{course.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>{course.chapters_count} Chapters</span>
+                      <span>{course.quizzes_count} Quizzes</span>
+                    </div>
+                    <div className="mt-4 flex items-center text-primary font-medium">
+                      Start Learning
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         )}
       </div>

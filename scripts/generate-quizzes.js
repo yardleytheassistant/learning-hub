@@ -1,183 +1,63 @@
-#!/usr/bin/env node
-/**
- * AI Quiz Generator
- * Reads IS Powerpoint PDFs and generates quizzes using OpenAI
- */
+import OpenAI from 'openai';
 
-const fs = require('fs')
-const path = require('path')
-const pdf = require('pdf-parse')
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const PDF_DIR = path.join(process.env.HOME, 'Desktop/IS Powerpoints')
-const OUTPUT_DIR = path.join(__dirname, '../public/quizzes')
+const chapters = [
+  { num: 3, topic: 'Numerical Measures - mean, median, mode, measures of dispersion, range, variance, standard deviation' },
+  { num: 4, topic: 'Displaying and Exploring Data - percentiles, quartiles, measures of position, box plots' },
+  { num: 5, topic: 'Probability Concepts - likelihood of events, probability rules, difference between probability and statistics' },
+  { num: 6, topic: 'Discrete Probability Distributions - random variables, probability mass functions, expected value, variance' },
+  { num: 7, topic: 'Continuous Probability Distributions - probability density functions, normal distribution, area under curve' },
+  { num: 8, topic: 'Sampling Methods and Central Limit Theorem - simple random sampling, stratified sampling, CLT' },
+  { num: 9, topic: 'Estimation and Confidence Intervals - point estimates, confidence intervals, margin of error' },
+  { num: 10, topic: 'One-Sample Tests of Hypothesis - null hypothesis, alternative hypothesis, p-values, Type I and II errors' },
+  { num: 13, topic: 'Correlation and Linear Regression - scatter diagrams, correlation coefficient, simple linear regression' },
+  { num: 14, topic: 'Multiple Regression Analysis - multiple independent variables, regression coefficients, model specification' },
+  { num: 20, topic: 'Decision Analysis - decision theory, payoff tables, decision making steps, expected value' }
+];
 
-// Create output directory if it doesn't exist
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true })
-}
+const prompt = `Generate 5 quiz questions about [TOPIC] from a Statistics course.
 
-// Quiz generation prompts
-const QUIZ_PROMPT = `You are an expert educator. Based on the following text from a course chapter, generate 5 multiple-choice quiz questions.
-
-Requirements:
-- 4 options per question (A, B, C, D)
-- Only ONE correct answer
-- Questions should test understanding, not just memorization
-- Include a brief explanation for each answer
-
-Return ONLY valid JSON in this format:
-{
-  "chapter": "Chapter X - Title",
-  "questions": [
-    {
-      "id": 1,
-      "question": "Question text?",
-      "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
-      "correct_answer": 0,
-      "explanation": "Why this is the correct answer"
-    }
-  ]
-}
-
-Text content:
-`
-
-async function extractTextFromPDF(pdfPath) {
-  try {
-    const dataBuffer = fs.readFileSync(pdfPath)
-    const data = await pdf(dataBuffer)
-    return {
-      text: data.text,
-      pages: data.numpages
-    }
-  } catch (error) {
-    console.error(`Error reading ${pdfPath}:`, error.message)
-    return { text: '', pages: 0 }
+Output ONLY valid JSON array (no markdown, no explanation):
+[
+  {
+    "question": "Question text?",
+    "options": ["A) Option A", "B) Option B", "C) Option C", "D) Option D"],
+    "correct_answer": 0,
+    "explanation": "Why this answer is correct"
   }
-}
+]
 
-function extractChapterInfo(filename) {
-  const match = filename.match(/Ch_(\d+)\.pdf/)
-  if (match) {
-    const chapterNum = parseInt(match[1])
-    return `Chapter ${chapterNum}`
-  }
-  return filename.replace('.pdf', '')
-}
+IMPORTANT: Return only valid JSON, nothing else. No code blocks, no markdown.`;
 
-async function generateQuizWithAI(text, chapter) {
-  // For now, use a simple heuristic-based quiz generator
-  // In production, you'd use OpenAI API here
+async function generateQuiz(chapter) {
+  console.log(`\nGenerating questions for Chapter ${chapter.num}...`);
   
-  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 50)
-  const questions = []
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      { role: 'system', content: 'You are a statistics professor creating quiz questions.' },
+      { role: 'user', content: prompt.replace('[TOPIC]', chapter.topic) }
+    ],
+    temperature: 0.7
+  });
   
-  // Simple question generation from key sentences
-  for (let i = 0; i < Math.min(5, sentences.length); i++) {
-    const sentence = sentences[i].trim()
-    const words = sentence.split(' ').filter(w => w.length > 4)
-    
-    if (words.length >= 3) {
-      // Create a fill-in-the-blank style question
-      const blankWord = words[Math.floor(Math.random() * words.length)]
-      const questionText = sentence.replace(blankWord, '_______')
-      
-      questions.push({
-        id: i + 1,
-        question: questionText,
-        options: [
-          `A) ${blankWord}`,
-          `B) ${words[Math.floor(Math.random() * words.length)] || 'unknown'}`,
-          `C) ${words[Math.floor(Math.random() * words.length)] || 'undefined'}`,
-          `D) ${words[Math.floor(Math.random() * words.length)] || 'not applicable'}`
-        ],
-        correct_answer: 0,
-        explanation: `The correct answer is "${blankWord}" based on the chapter content.`
-      })
-    }
-  }
+  const content = response.choices[0].message.content;
+  console.log(`Chapter ${chapter.num}:`);
+  console.log(content);
   
-  return {
-    chapter,
-    questions
-  }
-}
-
-async function generateQuizFromPDF(pdfPath) {
-  const filename = path.basename(pdfPath)
-  const chapter = extractChapterInfo(filename)
-  
-  console.log(`Processing ${filename}...`)
-  
-  const { text, pages } = await extractTextFromPDF(pdfPath)
-  
-  if (!text || text.length < 100) {
-    console.log(`  Skipping - not enough text content`)
-    return null
-  }
-  
-  console.log(`  Extracted ${text.length} characters from ${pages} pages`)
-  
-  // Generate quiz using AI
-  const quiz = await generateQuizWithAI(text, chapter)
-  
-  console.log(`  Generated ${quiz.questions.length} questions`)
-  
-  return quiz
+  return { chapter: chapter.num, questions: content };
 }
 
 async function main() {
-  console.log('🎯 AI Quiz Generator for Learning Hub')
-  console.log('====================================')
-  console.log(`PDF Directory: ${PDF_DIR}`)
-  console.log(`Output Directory: ${OUTPUT_DIR}`)
-  console.log('')
-  
-  // Find all PDF files
-  const pdfFiles = fs.readdirSync(PDF_DIR)
-    .filter(f => f.endsWith('.pdf'))
-    .sort()
-  
-  console.log(`Found ${pdfFiles.length} PDF files\n`)
-  
-  const allQuizzes = {
-    generatedAt: new Date().toISOString(),
-    chapters: []
-  }
-  
-  for (const pdfFile of pdfFiles) {
-    const pdfPath = path.join(PDF_DIR, pdfFile)
-    const quiz = await generateQuizFromPDF(pdfPath)
-    
-    if (quiz) {
-      allQuizzes.chapters.push(quiz)
-      
-      // Save individual quiz file
-      const outputFile = pdfFile.replace('.pdf', '.json')
-      fs.writeFileSync(
-        path.join(OUTPUT_DIR, outputFile),
-        JSON.stringify(quiz, null, 2)
-      )
-      console.log(`  Saved: ${outputFile}`)
+  for (const chapter of chapters) {
+    try {
+      await generateQuiz(chapter);
+      await new Promise(r => setTimeout(r, 1000)); // Rate limit
+    } catch (e) {
+      console.error(`Chapter ${chapter.num} failed:`, e.message);
     }
-    console.log('')
   }
-  
-  // Save combined quizzes index
-  fs.writeFileSync(
-    path.join(OUTPUT_DIR, 'index.json'),
-    JSON.stringify(allQuizzes, null, 2)
-  )
-  
-  console.log('✅ Quiz generation complete!')
-  console.log(`📁 Generated ${allQuizzes.chapters.length} quizzes`)
-  console.log(`📂 Output: ${OUTPUT_DIR}`)
-  
-  // Print summary
-  console.log('\n📊 Quiz Summary:')
-  allQuizzes.chapters.forEach(ch => {
-    console.log(`  - ${ch.chapter}: ${ch.questions.length} questions`)
-  })
 }
 
-main().catch(console.error)
+main();
