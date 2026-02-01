@@ -23,11 +23,7 @@ interface Quiz {
   title: string
   questions_count: number
   time_estimate_minutes: number
-  chapter?: {
-    id: string
-    chapter_number: number
-    title: string
-  }
+  chapter_id: string
 }
 
 interface PageProps {
@@ -59,8 +55,7 @@ export default function QuizPage({ params }: PageProps) {
       )
       const quizzes = await quizRes.json()
       if (quizzes.length > 0) {
-        const q = quizzes[0]
-        setQuiz(q)
+        setQuiz(quizzes[0])
         
         // Fetch questions
         const questionsRes = await fetch(
@@ -190,7 +185,7 @@ export default function QuizPage({ params }: PageProps) {
               </div>
 
               <div className="flex gap-4">
-                <Link href={`/courses/${quiz.chapter?.id || ''}`} className="flex-1">
+                <Link href={`/courses/${quiz.chapter_id}`} className="flex-1">
                   <Button variant="outline" className="w-full">
                     <ChevronLeft className="w-4 h-4 mr-1" />
                     Back to Course
@@ -221,7 +216,7 @@ export default function QuizPage({ params }: PageProps) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <Link href={`/courses/${quiz.chapter?.id || ''}`} className="text-sm text-muted-foreground hover:text-primary">
+            <Link href={`/courses/${quiz.chapter_id}`} className="text-sm text-muted-foreground hover:text-primary">
               ← Back to Course
             </Link>
             <h1 className="text-xl font-bold mt-1">{quiz.title}</h1>
